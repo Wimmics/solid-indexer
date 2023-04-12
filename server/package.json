@@ -1,0 +1,39 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "A SOLID agent able to index some content on a POD.",
+  "main": "index.ts",
+  "scripts": {
+    "serve": "nodemon index.ts",
+    "start": "ts-node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wimmics/solid-indexer.git"
+  },
+  "keywords": [
+    "solid",
+    "pod",
+    "indexing",
+    "agent",
+    "semantic-web",
+    "linked-data"
+  ],
+  "author": "Maxime Lecoq (Wimmics)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wimmics/solid-indexer/issues"
+  },
+  "homepage": "https://github.com/Wimmics/solid-indexer#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.15.11",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}

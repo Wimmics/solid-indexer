@@ -1,0 +1,18 @@
+services:
+  css:
+    image: solidproject/community-server:6.0.0-alpha.0
+    restart: always
+    container_name: solid-indexer_css
+    environment:
+      - CSS_BASE_URL=http://localhost:8000
+      - CSS_PORT=8000
+      - CSS_CONFIG=config/file-notifications-all.json
+    volumes:
+      - css:/data
+      - ./css/file-notifications-all.json:/community-server/config/file-notifications-all.json
+    ports:
+      - 8000:8000
+
+volumes:
+  css:
+    name: solid-indexer_css
