@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/Wimmics/solid-indexer#readme",
   "dependencies": {
+    "@inrupt/solid-client-access-grants": "^2.1.2",
     "express": "^4.18.2"
   },
   "devDependencies": {
