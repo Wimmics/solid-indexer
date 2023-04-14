@@ -17,7 +17,7 @@
     "css:config/identity/pod/static.json",
     "css:config/identity/registration/enabled.json",
     "css:config/ldp/authentication/dpop-bearer.json",
-    "css:config/ldp/authorization/webacl.json",
+    "css:config/ldp/authorization/acp.json",
     "css:config/ldp/handler/default.json",
     "css:config/ldp/metadata-parser/default.json",
     "css:config/ldp/metadata-writer/default.json",
@@ -35,7 +35,7 @@
   ],
   "@graph": [
     {
-      "comment": "A Solid server that stores its resources on disk, uses WAC for authorization and enables WebSockets and WebHooks notifications."
+      "comment": "A Solid server that stores its resources on disk, uses ACP for authorization and enables WebSockets and WebHooks notifications."
     }
   ]
 }

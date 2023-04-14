@@ -6,10 +6,10 @@ services:
     environment:
       - CSS_BASE_URL=http://localhost:8000
       - CSS_PORT=8000
-      - CSS_CONFIG=config/file-notifications-all.json
+      - CSS_CONFIG=config/file-acp-notifications-all.json
     volumes:
       - css:/data
-      - ./css/file-notifications-all.json:/community-server/config/file-notifications-all.json
+      - ./css/file-acp-notifications-all.json:/community-server/config/file-acp-notifications-all.json
     ports:
       - 8000:8000
 

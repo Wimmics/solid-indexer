@@ -33,7 +33,7 @@ docker compose up -d
 
 That will start the CSS on port 8000.
 
-_Remark: the WebHook notifications are not enabled by default. We had to provide a custom configuration (see the `css/file-notifications-all.json` file)._
+_Remark: the ACP and WebHook notifications are not enabled by default. We had to provide a custom configuration (see the `css/file-acp-notifications-all.json` file)._
 
 ### Run the agent
 
