@@ -37,7 +37,7 @@ docker compose up -d
 ```
 
 - The CSS server will listen on port 8000;
-- The agent server will listen on port 8080;
+- The agent server will listen on port 8080; (**but do not connect to it just yet**)
 - The client will listen on port 3000.
 
 _Remark: the ACP and WebHook notifications are not enabled by default. We had to provide a custom configuration (see the `css/file-acp-notifications-all.json` file)._
@@ -74,7 +74,7 @@ docker cp ./data/solid-indexer/ solid-indexer_css:/data/
 
 Go to http://localhost:8080 and login the agent.
 
-Use the credentials you defined at the previous step.
+Use the credentials you defined for `solid-indexer` at the previous step.
 
 Click on "Authorize".
 
@@ -82,7 +82,10 @@ Click on "Authorize".
 
 Go to http://localhost:3000 and click on the "Login" button to log the user in.
 
-Use the credentials you defined at the previous step.
+If you are still logged in as `solid-indexer` (check "Your WebID is ..."),
+then click on "Use a different WebID".
+
+Use the credentials you defined for `user` at the previous step.
 
 Click on "Authorize".
 
