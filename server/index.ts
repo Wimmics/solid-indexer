@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import cookieSession  from 'cookie-session';
 import cors from 'cors';
 import { getSessionFromStorage, Session } from '@inrupt/solid-client-authn-node';
-import { buildThing, createContainerAt, createThing, getContainedResourceUrlAll, getSolidDataset, getThing, getThingAll, getUrl, saveSolidDatasetAt, setThing } from '@inrupt/solid-client';
+import { getFile, deleteFile, buildThing, createContainerAt, createThing, getContainedResourceUrlAll, getSolidDataset, getThing, getThingAll, getUrl, saveSolidDatasetAt, setThing } from '@inrupt/solid-client';
 import { RDF } from "@inrupt/vocab-common-rdf";
 import { SOLID } from "@inrupt/vocab-solid";
 
@@ -37,7 +37,7 @@ app.use(
   }*/)
 );
 
-app.use(express.json());
+app.use(express.json({ type: 'application/*+json' }));
 app.use(express.urlencoded());
 
 app.listen(port, () => {
@@ -119,8 +119,8 @@ app.get("/redirect-from-solid-idp", async (req: Request, res: Response) => {
       }`;
 
       // https://github.com/solid/notifications/blob/main/webhook-subscription-2021.md
-      //const saved = await session.fetch("http://localhost:8000/.notifications/WebHookSubscription2021/", { method: 'POST', headers: { "content-type": "application/ld+json" }, body: subscription });
-      //console.log(await saved.text());
+      const saved = await session.fetch("http://localhost:8000/.notifications/WebHookSubscription2021/", { method: 'POST', headers: { "content-type": "application/ld+json" }, body: subscription });
+      console.log(await saved.text());
 
       res.redirect("http://localhost:8080");
     }
@@ -150,11 +150,36 @@ app.post("/job", async (req: Request, res: Response, next) => {
   const session = await getSessionFromStorage(sessionId);
 
   if (session) {
-    if (req.body && req.body.url) {
+    if (req.body) {
+      
+      const inboxDataset = await getSolidDataset("http://localhost:8000/solid-indexer/inbox/", { fetch: session.fetch });
+      const notifications: Array<string> = getContainedResourceUrlAll(inboxDataset);
+      
+      if (notifications.length === 0) {
+        console.error("No notification found.");
+        res.sendStatus(500);
+        return;
+      }
+      
+      const lastNotificationUrl = notifications.pop()!;
+      const notificationBlob = await getFile(lastNotificationUrl, { fetch: session.fetch });
+      const notificationData: string = await notificationBlob.text();
+      
+      if (!notificationData) {
+        console.error("Unable to read the notification.");
+        res.send(500);
+        return;
+      }
+      
       res.sendStatus(200);
 
-      const jobDataset = await getSolidDataset(req.body.url, { fetch: session.fetch });
-      const jobThing = getThing(jobDataset, req.body.url + "#");
+      const notification = JSON.parse(notificationData);
+      const jobUrl: string = notification.object;
+      
+      console.log("Found a job to do in the notification at: <" + jobUrl + ">.");
+      
+      const jobDataset = await getSolidDataset(jobUrl, { fetch: session.fetch });
+      const jobThing = getThing(jobDataset, jobUrl + "#");
 
       if (jobThing) {
         const container = getUrl(jobThing, "https://solid-indexer.org/targetContainer");
@@ -169,8 +194,12 @@ app.post("/job", async (req: Request, res: Response, next) => {
 
             console.log("Job details: (" + container + ", " + target + ", " + output + ").");
 
-            if (container && target && output)
+            if (container && target && output) {
               runJob(container, target, output);
+
+              await deleteFile(lastNotificationUrl, { fetch: session.fetch });
+              console.log("Successfully deleted the notification <" + lastNotificationUrl + ">.");
+            }
             else console.log("Can't start the job: invalid data.");
           }
         }
@@ -254,7 +283,7 @@ const runJob = async(container: string, target: string, output: string) => {
     const savedTypeIndexDataset = await saveSolidDatasetAt(output, typeIndexDataset, { fetch: session.fetch });
 
     if (savedTypeIndexDataset)
-      console.log("Job is saved to the storage.");
+      console.log("The Job result has been successfully saved to the user's storage.");
 
     else console.log("Can't save the index on the storage.");
   }

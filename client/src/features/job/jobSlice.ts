@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk, store } from '../../app/store';
-import { handleIncomingRedirect, login, fetch, getDefaultSession, ISessionInfo } from '@inrupt/solid-client-authn-browser';
-import { SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, saveSolidDatasetAt, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
+import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
+import { SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
 import { RDF } from "@inrupt/vocab-common-rdf";
 
 // TODO: make it dynamic
@@ -97,10 +97,8 @@ export const grantReadAccess = createAsyncThunk<void, {jobUrl: string, agentWebI
 
     const grant = true; //await universalAccess.setAgentAccess(arg.jobUrl, arg.agentWebId, rights, { fetch: session.fetch });
 
-    console.log(grant);
-
     if (grant) {
-      /*const profileDataset = await getSolidDataset(arg.agentWebId);
+      const profileDataset = await getSolidDataset(arg.agentWebId);
       const profileThing = getThing(profileDataset, arg.agentWebId);
 
       if (profileThing) {
@@ -118,7 +116,7 @@ export const grantReadAccess = createAsyncThunk<void, {jobUrl: string, agentWebI
           };
 
           const file = new Blob([JSON.stringify(notification)], { type: "plain/text" });
-          const contentType: string = 'application/json'; //;profile="https://www.w3.org/ns/activitystreams"';
+          const contentType: string = 'application/ld+json'; //;profile="https://www.w3.org/ns/activitystreams"';
 
           const savedFile = await saveFileInContainer(ldpInbox, file, { contentType: contentType, fetch: session.fetch });
 
@@ -131,15 +129,7 @@ export const grantReadAccess = createAsyncThunk<void, {jobUrl: string, agentWebI
         else throw rejectWithValue("Unable to find the LDP inbox of the agent " + arg.agentWebId + ".");
       }
 
-      else throw rejectWithValue("Can't load the profile of the agent " + arg.agentWebId + ".");*/
-
-      const notification = JSON.stringify({ url: arg.jobUrl });
-      const response = await session.fetch("http://localhost:8080/job", { method: "POST", headers: { "Content-type": "application/json"}, body: notification});
-      
-      if (response.status === 200)
-        return;
-
-      else throw rejectWithValue("Unable to start the job.");
+      else throw rejectWithValue("Can't load the profile of the agent " + arg.agentWebId + ".");
     }
 
     else throw rejectWithValue("Unable to grant the access to the agent.");
@@ -207,8 +197,6 @@ export const jobSlice = createSlice({
         })
   },
 });
-
-//export const { loginUser } = userSlice.actions;
 
 // Selectors
 export const selectJobs = (state: RootState) => state.jobs.jobs;

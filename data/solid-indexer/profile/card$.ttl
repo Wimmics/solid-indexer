@@ -11,4 +11,4 @@
     
     solid:oidcIssuer <http://localhost:8000/>;
     a foaf:Person;
-    ldp:inbox <http://localhost:8000/solid-indexer/inbox>.
+    ldp:inbox <http://localhost:8000/solid-indexer/inbox/>.

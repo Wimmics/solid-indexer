@@ -66,6 +66,10 @@ Create a POD for the agent:
 docker cp ./data/user/ solid-indexer_css:/data/
 ```
 
+```
+docker cp ./data/solid-indexer/ solid-indexer_css:/data/
+```
+
 ### 4. Login the agent
 
 Go to http://localhost:8080 and login the agent.
@@ -100,4 +104,11 @@ Wait for 10 seconds (see `docker logs -f solid-indexer_server`).
 Display the indexed resources:
 ```
 docker exec solid-indexer_css /bin/cat /data/user/public/typeIndex$.ttl
+```
+
+### Utils
+
+Remove all the subscriptions to notifications:
+```
+docker exec solid-indexer_css rm -f "/data/.internal/notifications/*"
 ```
