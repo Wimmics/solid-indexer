@@ -98,7 +98,7 @@ app.get("/redirect-from-solid-idp", async (req: Request, res: Response) => {
     const session = await getSessionFromStorage(req.session.sessionId);
 
     if (session) {
-      await session.handleIncomingRedirect(`http://localhost:${port}${req.url}`);
+      await session.handleIncomingRedirect(`${req.url}`);
 
       sessionId = session.info.sessionId;
 
