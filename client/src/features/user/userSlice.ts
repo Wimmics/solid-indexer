@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk, store } from '../../app/store';
 import { handleIncomingRedirect, login, fetch, getDefaultSession, ISessionInfo } from '@inrupt/solid-client-authn-browser'
-import { loadJobs } from '../job/jobSlice';
+import { loadJobs, readTypeIndex } from '../job/jobSlice';
 
 export interface UserState {
   sessionId: string;
@@ -33,7 +33,10 @@ export const logUserIn = createAsyncThunk<ISessionInfo>(
       });
     }
 
-    else dispatch(loadJobs());
+    else {
+      dispatch(loadJobs());
+      dispatch(readTypeIndex());
+    }
 
     return session.info;
   }

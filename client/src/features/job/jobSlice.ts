@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
-import { SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
+import { getFile, SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
 import { RDF } from "@inrupt/vocab-common-rdf";
 
 // TODO: make it dynamic
@@ -21,10 +21,12 @@ export interface Job {
 
 export interface JobState {
   jobs: Array<Job>;
+  typeIndex: string;
 }
 
 const initialState: JobState = {
-  jobs: new Array<Job>()
+  jobs: new Array<Job>(),
+  typeIndex: ""
 };
 
 export const loadJobs = createAsyncThunk<Array<Job>>(
@@ -78,6 +80,25 @@ export const readAccess = createAsyncThunk<any, string>(
       throw rejectWithValue("The user is not logged in.");
 
     console.log(await universalAccess.getAgentAccessAll(jobUrl, { fetch: session.fetch }));
+  }
+);
+
+export const readTypeIndex = createAsyncThunk<string>(
+  'jobs/readTypeIndex',
+  async (arg, { rejectWithValue, fulfillWithValue }) => {
+    const session = getDefaultSession();
+    
+    if (!session.info.isLoggedIn)
+      throw rejectWithValue("The user is not logged in.");
+
+    const typeIndexBlob = await getFile("http://localhost:8000/user/public/typeIndex", { fetch: session.fetch });
+    let typeIndex: string = await new Response(typeIndexBlob).text();
+
+    /*const reader = new FileReader();
+    reader.onload = (e) => typeIndex = reader.result?.toString();
+    reader.readAsText(typeIndexBlob);*/
+
+    return fulfillWithValue(typeIndex);
   }
 );
 
@@ -195,10 +216,18 @@ export const jobSlice = createSlice({
         .addCase(addJob.rejected, (state, action) => {
             console.log(action.payload);
         })
+        .addCase(readTypeIndex.pending, (state, action) => {
+          state.typeIndex = "Loading...";
+        })
+        .addCase(readTypeIndex.fulfilled, (state, action) => {
+            state.typeIndex = action.payload;
+        })
   },
 });
 
 // Selectors
 export const selectJobs = (state: RootState) => state.jobs.jobs;
+
+export const selectTypeIndex = (state: RootState) => state.jobs.typeIndex;
 
 export default jobSlice.reducer;
