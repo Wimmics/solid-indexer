@@ -61,7 +61,7 @@ We use a dedicated vocabulary except for the target class we use SHACL.
 
 A Job is of the form:
 ```ttl
-@prefix solid-indexer: <https://solid-indexer.org/.
+@prefix solid-indexer: <https://solid-indexer.org/>.
 @prefix shacl: <http://www.w3.org/ns/shacl#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
@@ -191,7 +191,7 @@ It should look like:
 If you did not change the default Job configuration, the processed data is the things contained in the `./data/user/things/` folder/container:
 
 `./data/user/things/thing1`:
-```
+```ttl
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 <#1> a foaf:Person.
@@ -199,7 +199,7 @@ If you did not change the default Job configuration, the processed data is the t
 ```
 
 `./data/user/things/thing2`:
-```
+```ttl
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 <#1> a foaf:Person.
@@ -207,7 +207,7 @@ If you did not change the default Job configuration, the processed data is the t
 ```
 
 `./data/user/things/thing3`:
-```
+```ttl
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 <#1> a foaf:Project.
