@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
-import { getFile, SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
+import { getFile, SolidDataset, buildThing, createSolidDataset, createThing, universalAccess, getContainedResourceUrlAll, getSolidDataset, getThing, getUrl, acp_ess_2, toRdfJsDataset, saveSolidDatasetAt, overwriteFile, saveSolidDatasetInContainer, setThing, saveFileInContainer } from "@inrupt/solid-client";
 import { RDF } from "@inrupt/vocab-common-rdf";
 
 // TODO: make it dynamic
@@ -94,10 +94,6 @@ export const readTypeIndex = createAsyncThunk<string>(
     const typeIndexBlob = await getFile("http://localhost:8000/user/public/typeIndex", { fetch: session.fetch });
     let typeIndex: string = await new Response(typeIndexBlob).text();
 
-    /*const reader = new FileReader();
-    reader.onload = (e) => typeIndex = reader.result?.toString();
-    reader.readAsText(typeIndexBlob);*/
-
     return fulfillWithValue(typeIndex);
   }
 );
@@ -116,7 +112,7 @@ export const grantReadAccess = createAsyncThunk<void, {jobUrl: string, agentWebI
       control: false
     }
 
-    const grant = true; //await universalAccess.setAgentAccess(arg.jobUrl, arg.agentWebId, rights, { fetch: session.fetch });
+    const grant = true; //await universalAccess.setAgentAccess(arg.jobUrl + '#', arg.agentWebId, rights, { fetch: session.fetch });
 
     if (grant) {
       const profileDataset = await getSolidDataset(arg.agentWebId);
@@ -184,11 +180,36 @@ export const addJob = createAsyncThunk<Job, {container: string, target: string, 
     jobDataset = setThing(jobDataset, jobThing);
     jobDataset = setThing(jobDataset, target);
 
-    console.log(jobDataset);
-
     const savedSolidDataset = await saveSolidDatasetInContainer(storage + jobsPath, jobDataset, { fetch: session.fetch });
-
+    
     const job = { url: savedSolidDataset.internal_resourceInfo.sourceIri, ...arg };
+
+    /*let resourceWithAcr = await acp_ess_2.getSolidDatasetWithAcr(job.url, { fetch: session.fetch });
+
+    let acrDataset = createSolidDataset();
+    
+    const acrThing = buildThing(createThing())//{ name: job.url + '.acr' }))
+      .addUrl(RDF.type, "http://www.w3.org/ns/solid/acp#AccessControlResource")
+      .addUrl("http://www.w3.org/ns/solid/acp#resource", job.url)
+      .build();
+
+    acrDataset = setThing(acrDataset, acrThing);
+
+    const rdfjs: any = toRdfJsDataset(acrDataset);
+    rdfjs["_entities"][1] = `https://www.inrupt.com/.well-known/sdk-local-node/${job.url.split('/').pop()}.acr`;
+    console.log(rdfjs);
+
+    await overwriteFile(job.url + '.acr', new Blob([JSON.stringify(rdfjs)], { type: "internal/quads" }), { fetch: session.fetch });*/
+
+    //await saveSolidDatasetAt(job.url + '.acr', acrDataset, { fetch: session.fetch });
+
+    // Hack
+    /*const acrName = job.url + '.acr';
+    const acr = `<${acrName}> a <http://www.w3.org/ns/solid/acp#AccessControlResource>;
+    <http://www.w3.org/ns/solid/acp#resource> <${job.url}>.`;
+
+    session.fetch(acrName, { method: "PUT", headers: { "Content-type": "internal/quads"}, body: acr});*/
+
     return Promise.resolve(job);
   }
 );

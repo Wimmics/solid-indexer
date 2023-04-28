@@ -31,7 +31,6 @@ export default function JobForm() {
                     type="text" 
                     id="targetedContainer" 
                     value={targetedContainer} 
-                    readOnly
                     onChange={(e) => setTargetedContainer(e.target.value)} 
                 />
             </div>
@@ -43,7 +42,6 @@ export default function JobForm() {
                     type="text" 
                     id="targetedClass" 
                     value={targetedClass} 
-                    readOnly
                     onChange={(e) => setTargetedClass(e.target.value)} 
                 />
             </div>
@@ -54,7 +52,6 @@ export default function JobForm() {
                     style={{ flexGrow: 1 }} 
                     type="text" 
                     id="targetedOutput" 
-                    readOnly 
                     value={targetedOutput}
                     onChange={(e) => setTargetedOutput(e.target.value)} 
                 />

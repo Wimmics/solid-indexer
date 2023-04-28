@@ -195,7 +195,7 @@ app.post("/job", async (req: Request, res: Response, next) => {
             console.log("Job details: (" + container + ", " + target + ", " + output + ").");
 
             if (container && target && output) {
-              runJob(container, target, output);
+              await runJob(container, target, output);
 
               await deleteFile(lastNotificationUrl, { fetch: session.fetch });
               console.log("Successfully deleted the notification <" + lastNotificationUrl + ">.");
