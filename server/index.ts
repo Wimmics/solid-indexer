@@ -276,7 +276,7 @@ app.get("/token", async (req: Request, res: Response, next) => {
   const response = await fetch('http://localhost:8000/idp/credentials/', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email: 'maxime.lecoq.a@wanadoo.fr', password: 'azerty', name: 'solid-indexer' })
+    body: JSON.stringify({ email: '', password: '', name: 'solid-indexer' })
   });
 
   const { id, secret } = await response.json();
