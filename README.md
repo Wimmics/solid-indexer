@@ -10,7 +10,7 @@ This project has been developed during the [SOLID hackathon of April, 2023](http
 
 __Solid-indexer is not made and won't work for production use.__
 
-We found this hackathond a good place for experimenting with SOLID agent. We wanted to try to develop one, very basicaly, to see what it can look like. This exercice was very interesting and fun and we did learn a lot! :)
+We found this hackathond a good place for experimenting with SOLID agent. We wanted to try to develop one, a very basic one, to see what it could look like. This exercice was very interesting and fun and we did learn a lot! :)
 
 ## Introduction
 

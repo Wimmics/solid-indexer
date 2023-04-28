@@ -162,9 +162,6 @@ export const addJob = createAsyncThunk<Job, {container: string, target: string, 
       throw rejectWithValue("The user is not logged in.");
 
     let jobDataset: SolidDataset = createSolidDataset();
-    
-    const si: string = "https://solid-indexer.org/";
-    const sh: string = "http://www.w3.org/ns/shacl#";
 
     const target = buildThing(createThing())
         .addUrl(sh + "targetClass", arg.target)
