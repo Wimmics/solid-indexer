@@ -1,0 +1,20 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix acp: <http://www.w3.org/ns/solid/acp#>.
+
+<http://localhost:8000/solid-indexer/inbox>
+    a acp:AccessControlResource;
+    acp:resource <./>;
+    acp:accessControl <#publicAppendAccess>;
+    acp:memberAccessControl <#publicAppendAccess>.
+
+<#publicAppendAccess>
+    a acp:AccessControl;
+    acp:apply [
+        a acp:Policy;
+        acp:allow acl:Append;
+        acp:anyOf [
+            a acp:Matcher;
+            acp:agent acp:AuthenticatedAgent;
+            acp:client acp:PublicClient
+        ]
+    ].

@@ -1,58 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
+import { useAppSelector } from './app/hooks';
+import JobCard from './features/job/jobCard';
+import JobForm from './features/job/jobForm';
+import { selectJobs } from './features/job/jobSlice';
+import UserCard from './features/user/userCard';
+import { selectIsLoggedIn } from './features/user/userSlice';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+export default function App() {
+
+  const userIsLoggedIn = useAppSelector(selectIsLoggedIn);
+  const jobs = useAppSelector(selectJobs);
+
+  return userIsLoggedIn ? (
+    <div>
+      <UserCard />
+
+      <JobForm />
+
+      <h3>List of jobs:</h3>
+
+      {jobs.map((job, index) => {
+        return <JobCard key={'job' + index} url={job.url} container={job.container} target={job.target} output={job.output} />
+      })}
+      
     </div>
-  );
+    ) : <UserCard />
 }
-
-export default App;

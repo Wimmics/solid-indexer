@@ -3,15 +3,47 @@ services:
     image: solidproject/community-server:6.0.0-alpha.0
     restart: always
     container_name: solid-indexer_css
+    network_mode: host
     environment:
       - CSS_BASE_URL=http://localhost:8000
       - CSS_PORT=8000
       - CSS_CONFIG=config/file-acp-notifications-all.json
     volumes:
       - css:/data
-      - ./css/file-acp-notifications-all.json:/community-server/config/file-acp-notifications-all.json
+      - ./config/file-acp-notifications-all.json:/community-server/config/file-acp-notifications-all.json
+      - ./config/hosts:/etc/hosts
     ports:
       - 8000:8000
+
+  server:
+    image: node:lts
+    restart: always
+    container_name: solid-indexer_server
+    network_mode: host
+    depends_on:
+      - css
+    working_dir: /app
+    command: npm run serve
+    volumes:
+      - ./server/:/app
+      - ./config/hosts:/etc/hosts
+    ports:
+      - 8080:8080
+
+  client:
+    image: node:lts
+    restart: always
+    container_name: solid-indexer_client
+    network_mode: host
+    depends_on:
+      - server
+    working_dir: /app
+    command: npm start
+    volumes:
+      - ./client/:/app
+      - ./config/hosts:/etc/hosts
+    ports:
+      - 8080:8080
 
 volumes:
   css:

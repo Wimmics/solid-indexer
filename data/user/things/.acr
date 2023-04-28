@@ -1,0 +1,29 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix acp: <http://www.w3.org/ns/solid/acp#>.
+
+<#card> 
+    a acp:AccessControlResource;
+    <http://www.w3.org/ns/solid/acp#resource> <./>;
+    acp:memberAccessControl <#publicReadAccess>;
+    <http://www.w3.org/ns/solid/acp#accessControl> <#defaultAccessControl>, <#publicReadAccess>.
+
+<#defaultAccessControl>
+    <http://www.w3.org/ns/solid/acp#apply> <#defaultAccessControlAgentMatcherReadPolicy>.
+
+<#defaultAccessControlAgentMatcherReadPolicy>
+    <http://www.w3.org/ns/solid/acp#allow> <http://www.w3.org/ns/auth/acl#Read>;
+    <http://www.w3.org/ns/solid/acp#anyOf> <#defaultAccessControlAgentMatcherReadPolicyMatcher>.
+
+<#defaultAccessControlAgentMatcherReadPolicyMatcher>
+    <http://www.w3.org/ns/solid/acp#agent> <http://localhost:8000/solid-indexer/profile/card#me>.
+
+<#publicReadAccess>
+    a acp:AccessControl;
+    acp:apply [
+        a acp:Policy;
+        acp:allow acl:Read;
+        acp:anyOf [
+            a acp:Matcher;
+            acp:agent acp:PublicAgent
+        ]
+    ].

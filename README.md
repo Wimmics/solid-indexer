@@ -22,35 +22,82 @@ We use the [Community Solid Server](https://communitysolidserver.github.io/Commu
 - React
 - Redux
 
-## Development
+## Get started
 
-### Start the CSS
+### 0. Install dependancies
 
-You first need to run the [Community Solid Server](https://communitysolidserver.github.io/CommunitySolidServer/5.x/). You can start it with the `docker-compose` (deprecated) or the new `docker compose` command:
+- Go the `server` directory. Run `npm install`;
+- Go to the `client` directory. Run `npm install`.
+
+### 1. Start the container
+
+You can start it with the `docker-compose` (deprecated) or the new `docker compose` command:
 ```
 docker compose up -d
 ```
 
-That will start the CSS on port 8000.
+- The CSS server will listen on port 8000;
+- The agent server will listen on port 8080;
+- The client will listen on port 3000.
 
 _Remark: the ACP and WebHook notifications are not enabled by default. We had to provide a custom configuration (see the `css/file-acp-notifications-all.json` file)._
 
-### Run the agent
+### 2. Create the PODs for the user and the agent
 
-Then, you have to run the server.
+Go to http://localhost:8000/.
+
+Check the box "Sign me up for an account".
+
+Create a POD for the user:
+- In the "Pod name" field, type "user" (exactly like it)
+- Fill the email and passwords
+- Click on "Complete setup"
+
+Go to http://localhost:8000/idp/register/ to register the agent.
+
+Create a POD for the agent:
+- In the "Pod name" field, type "solid-indexer" (exactly like it)
+- Fill the email and passwords
+- Click on "Sign up"
+
+### 3. Copy the files
+
 ```
-cd server
-npm run serve
+docker cp ./data/user/ solid-indexer_css:/data/
 ```
 
-This will start the agent on port 8080.
+### 4. Login the agent
 
-### Run the browser app
+Go to http://localhost:8080 and login the agent.
 
-To run the client, just run the React app:
+Use the credentials you defined at the previous step.
+
+Click on "Authorize".
+
+### 5. Login the user
+
+Go to http://localhost:3000 and click on the "Login" button to log the user in.
+
+Use the credentials you defined at the previous step.
+
+Click on "Authorize".
+
+### 6. Create a Job
+
+Check that there is no indexed resources yet:
 ```
-cd client
-npm start
+docker exec solid-indexer_css /bin/cat /data/user/public/typeIndex$.ttl
 ```
 
-That will start the client on port 3000.
+Click on the "Add Job" button (note that you can't change the configuration yet).
+
+A new job will be added to the list of job.
+
+Click on the "Start job" button to launch the indexing process.
+
+Wait for 10 seconds (see `docker logs -f solid-indexer_server`).
+
+Display the indexed resources:
+```
+docker exec solid-indexer_css /bin/cat /data/user/public/typeIndex$.ttl
+```
